@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Node / Frontend
+node_modules/
+.npm
+frontend/dist/
+frontend/dist-ssr/
+*.local
+
+# Environment variables & secrets
+.env
+*.env
+!.env.example
+*.pem
+*.key
+
+# Data & Model Artifacts (never commit large raw datasets or binary models)
+data/
+*.zip
+ml/data/raw/
+ml/data/processed/
+ml/data/*.csv
+ml/data/*.parquet
+ml/data/*.json
+!ml/data/.gitkeep
+!ml/data/**/.gitkeep
+ml/models/*.pkl
+ml/models/*.joblib
+ml/models/*.bin
+ml/models/*.json
+!ml/models/.gitkeep
+ml/reports/figures/
+ml/reports/*.png
+
+# IDEs & OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+

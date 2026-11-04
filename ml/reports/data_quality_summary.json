@@ -1,0 +1,372 @@
+{
+  "validation": {
+    "is_valid": true,
+    "errors": [],
+    "warnings": [
+      "Identified 11967 observations above the 1.5x IQR upper threshold (130.0). These are preserved as natural retail peak signals."
+    ],
+    "stats": {
+      "total_rows": 913000,
+      "null_counts": {
+        "date": 0,
+        "store": 0,
+        "item": 0,
+        "sales": 0
+      },
+      "date_min": "2013-01-01",
+      "date_max": "2017-12-31",
+      "total_days": 1826,
+      "duplicate_rows": 0,
+      "unique_stores": 10,
+      "unique_items": 50,
+      "store_list": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "item_list": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ],
+      "total_sales": 47704512.0,
+      "mean_daily_sales": 52.25,
+      "median_daily_sales": 47.0,
+      "std_daily_sales": 28.8,
+      "min_daily_sales": 0.0,
+      "max_daily_sales": 231.0,
+      "iqr_outliers_count": 11967
+    }
+  },
+  "seasonality": {
+    "day_of_week_mean_sales": {
+      "Monday": 41.43,
+      "Tuesday": 48.23,
+      "Wednesday": 48.37,
+      "Thursday": 51.72,
+      "Friday": 55.16,
+      "Saturday": 58.66,
+      "Sunday": 62.14
+    },
+    "monthly_mean_sales": {
+      "January": 35.52,
+      "February": 39.38,
+      "March": 47.31,
+      "April": 55.15,
+      "May": 59.13,
+      "June": 63.03,
+      "July": 67.0,
+      "August": 59.11,
+      "September": 55.07,
+      "October": 51.19,
+      "November": 55.22,
+      "December": 39.37
+    }
+  },
+  "store_aggregations": {
+    "1": {
+      "total_sales": 4315603.0,
+      "mean_daily_sales": 47.27
+    },
+    "2": {
+      "total_sales": 6120128.0,
+      "mean_daily_sales": 67.03
+    },
+    "3": {
+      "total_sales": 5435144.0,
+      "mean_daily_sales": 59.53
+    },
+    "4": {
+      "total_sales": 5012639.0,
+      "mean_daily_sales": 54.9
+    },
+    "5": {
+      "total_sales": 3631016.0,
+      "mean_daily_sales": 39.77
+    },
+    "6": {
+      "total_sales": 3627670.0,
+      "mean_daily_sales": 39.73
+    },
+    "7": {
+      "total_sales": 3320009.0,
+      "mean_daily_sales": 36.36
+    },
+    "8": {
+      "total_sales": 5856169.0,
+      "mean_daily_sales": 64.14
+    },
+    "9": {
+      "total_sales": 5025976.0,
+      "mean_daily_sales": 55.05
+    },
+    "10": {
+      "total_sales": 5360158.0,
+      "mean_daily_sales": 58.71
+    }
+  },
+  "item_aggregations": {
+    "1": {
+      "total_sales": 401384.0,
+      "mean_daily_sales": 21.98
+    },
+    "2": {
+      "total_sales": 1069564.0,
+      "mean_daily_sales": 58.57
+    },
+    "3": {
+      "total_sales": 669087.0,
+      "mean_daily_sales": 36.64
+    },
+    "4": {
+      "total_sales": 401907.0,
+      "mean_daily_sales": 22.01
+    },
+    "5": {
+      "total_sales": 335230.0,
+      "mean_daily_sales": 18.36
+    },
+    "6": {
+      "total_sales": 1068281.0,
+      "mean_daily_sales": 58.5
+    },
+    "7": {
+      "total_sales": 1068777.0,
+      "mean_daily_sales": 58.53
+    },
+    "8": {
+      "total_sales": 1405108.0,
+      "mean_daily_sales": 76.95
+    },
+    "9": {
+      "total_sales": 938379.0,
+      "mean_daily_sales": 51.39
+    },
+    "10": {
+      "total_sales": 1337133.0,
+      "mean_daily_sales": 73.23
+    },
+    "11": {
+      "total_sales": 1271925.0,
+      "mean_daily_sales": 69.66
+    },
+    "12": {
+      "total_sales": 1271534.0,
+      "mean_daily_sales": 69.63
+    },
+    "13": {
+      "total_sales": 1539621.0,
+      "mean_daily_sales": 84.32
+    },
+    "14": {
+      "total_sales": 1071531.0,
+      "mean_daily_sales": 58.68
+    },
+    "15": {
+      "total_sales": 1607442.0,
+      "mean_daily_sales": 88.03
+    },
+    "16": {
+      "total_sales": 468480.0,
+      "mean_daily_sales": 25.66
+    },
+    "17": {
+      "total_sales": 602486.0,
+      "mean_daily_sales": 32.99
+    },
+    "18": {
+      "total_sales": 1538876.0,
+      "mean_daily_sales": 84.28
+    },
+    "19": {
+      "total_sales": 736892.0,
+      "mean_daily_sales": 40.36
+    },
+    "20": {
+      "total_sales": 867641.0,
+      "mean_daily_sales": 47.52
+    },
+    "21": {
+      "total_sales": 736190.0,
+      "mean_daily_sales": 40.32
+    },
+    "22": {
+      "total_sales": 1469971.0,
+      "mean_daily_sales": 80.5
+    },
+    "23": {
+      "total_sales": 534979.0,
+      "mean_daily_sales": 29.3
+    },
+    "24": {
+      "total_sales": 1205975.0,
+      "mean_daily_sales": 66.04
+    },
+    "25": {
+      "total_sales": 1473334.0,
+      "mean_daily_sales": 80.69
+    },
+    "26": {
+      "total_sales": 869981.0,
+      "mean_daily_sales": 47.64
+    },
+    "27": {
+      "total_sales": 402628.0,
+      "mean_daily_sales": 22.05
+    },
+    "28": {
+      "total_sales": 1604713.0,
+      "mean_daily_sales": 87.88
+    },
+    "29": {
+      "total_sales": 1271240.0,
+      "mean_daily_sales": 69.62
+    },
+    "30": {
+      "total_sales": 736554.0,
+      "mean_daily_sales": 40.34
+    },
+    "31": {
+      "total_sales": 1070845.0,
+      "mean_daily_sales": 58.64
+    },
+    "32": {
+      "total_sales": 803107.0,
+      "mean_daily_sales": 43.98
+    },
+    "33": {
+      "total_sales": 1270183.0,
+      "mean_daily_sales": 69.56
+    },
+    "34": {
+      "total_sales": 469935.0,
+      "mean_daily_sales": 25.74
+    },
+    "35": {
+      "total_sales": 1201541.0,
+      "mean_daily_sales": 65.8
+    },
+    "36": {
+      "total_sales": 1406548.0,
+      "mean_daily_sales": 77.03
+    },
+    "37": {
+      "total_sales": 534258.0,
+      "mean_daily_sales": 29.26
+    },
+    "38": {
+      "total_sales": 1470330.0,
+      "mean_daily_sales": 80.52
+    },
+    "39": {
+      "total_sales": 801311.0,
+      "mean_daily_sales": 43.88
+    },
+    "40": {
+      "total_sales": 534094.0,
+      "mean_daily_sales": 29.25
+    },
+    "41": {
+      "total_sales": 401759.0,
+      "mean_daily_sales": 22.0
+    },
+    "42": {
+      "total_sales": 669925.0,
+      "mean_daily_sales": 36.69
+    },
+    "43": {
+      "total_sales": 936635.0,
+      "mean_daily_sales": 51.29
+    },
+    "44": {
+      "total_sales": 536811.0,
+      "mean_daily_sales": 29.4
+    },
+    "45": {
+      "total_sales": 1471467.0,
+      "mean_daily_sales": 80.58
+    },
+    "46": {
+      "total_sales": 1070764.0,
+      "mean_daily_sales": 58.64
+    },
+    "47": {
+      "total_sales": 401781.0,
+      "mean_daily_sales": 22.0
+    },
+    "48": {
+      "total_sales": 937703.0,
+      "mean_daily_sales": 51.35
+    },
+    "49": {
+      "total_sales": 535663.0,
+      "mean_daily_sales": 29.34
+    },
+    "50": {
+      "total_sales": 1203009.0,
+      "mean_daily_sales": 65.88
+    }
+  },
+  "figure_paths": [
+    "ml/reports/figures/sales_distribution.png",
+    "ml/reports/figures/total_sales_over_time.png",
+    "ml/reports/figures/sales_by_store.png",
+    "ml/reports/figures/sales_by_item.png",
+    "ml/reports/figures/weekday_seasonality.png",
+    "ml/reports/figures/monthly_seasonality.png"
+  ]
+}

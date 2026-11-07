@@ -87,6 +87,31 @@ export interface InventoryResponse {
   assumptions: string[];
 }
 
+export interface DatasetSchemaInfo {
+  required_columns: string[];
+  column_descriptions: Record<string, string>;
+  max_upload_size_mb: number;
+}
+
+export interface ValidationReport {
+  is_valid: boolean;
+  errors: string[];
+  warnings: string[];
+  stats: {
+    total_rows?: number;
+    null_counts?: Record<string, number>;
+    date_min?: string;
+    date_max?: string;
+    total_days?: number;
+    duplicate_rows?: number;
+    unique_stores?: number;
+    unique_items?: number;
+    total_sales?: number;
+    mean_daily_sales?: number;
+    std_daily_sales?: number;
+  };
+}
+
 export interface MetricSet {
   MAE: number;
   RMSE: number;

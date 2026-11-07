@@ -28,13 +28,13 @@ interface SidebarProps {
 }
 
 export const navigationItems = [
-  { id: 'overview' as TabId, label: 'Overview', icon: LayoutDashboard, phase: 'Phase 1' },
-  { id: 'datasets' as TabId, label: 'Dataset Management', icon: Database, phase: 'Phase 2' },
-  { id: 'analytics' as TabId, label: 'Sales Analytics', icon: BarChart3, phase: 'Phase 2' },
-  { id: 'forecast' as TabId, label: 'Forecast Studio', icon: TrendingUp, phase: 'Phase 5' },
-  { id: 'inventory' as TabId, label: 'Inventory Insights', icon: Package, phase: 'Phase 5' },
-  { id: 'performance' as TabId, label: 'Model Performance', icon: Award, phase: 'Phase 4' },
-  { id: 'settings' as TabId, label: 'Settings / About', icon: Settings, phase: 'Phase 1' },
+  { id: 'overview' as TabId, label: 'Overview', icon: LayoutDashboard, phase: 'Live' },
+  { id: 'datasets' as TabId, label: 'Dataset Management', icon: Database, phase: 'Ingest' },
+  { id: 'analytics' as TabId, label: 'Sales Analytics', icon: BarChart3, phase: 'Explore' },
+  { id: 'forecast' as TabId, label: 'Forecast Studio', icon: TrendingUp, phase: 'Predict' },
+  { id: 'inventory' as TabId, label: 'Inventory Insights', icon: Package, phase: 'ROP' },
+  { id: 'performance' as TabId, label: 'Model Performance', icon: Award, phase: 'Benchmark' },
+  { id: 'settings' as TabId, label: 'Settings / About', icon: Settings, phase: 'System' },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, isOpen }) => {
@@ -50,9 +50,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, isOpen
         </div>
         <div>
           <span className="font-semibold text-white tracking-tight text-base block leading-tight">
-            DemandSense
+            DemandSense AI
           </span>
-          <span className="text-xs text-indigo-400 font-mono">v0.1.0 • Core Shell</span>
+          <span className="text-xs text-indigo-400 font-mono">v1.0.0 • Production UI</span>
         </div>
       </div>
 
@@ -63,7 +63,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, isOpen
             <span>Platform Status</span>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Phase 1: Architecture & Shell Active
+            Phase 6: Frontend & Dashboard Active
           </p>
         </div>
       </div>

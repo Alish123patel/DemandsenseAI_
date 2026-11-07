@@ -5,7 +5,10 @@ import {
   Info,
   AlertTriangle,
   CheckCircle2,
-  Loader2
+  Loader2,
+  Store,
+  Tag,
+  ShieldAlert
 } from 'lucide-react';
 import { fetchSeriesList, fetchInventoryRecommendation } from '../api/client';
 import { InventoryResponse } from '../api/types';
@@ -37,6 +40,7 @@ export const InventoryInsights: React.FC = () => {
   }, []);
 
   const runSimulation = async () => {
+    if (!selectedStore || !selectedItem) return;
     setLoading(true);
     setError(null);
     try {
@@ -49,8 +53,9 @@ export const InventoryInsights: React.FC = () => {
         safety_stock_buffer_percent: safetyBufferPercent,
       });
       setRecommendation(res);
-    } catch (err: any) {
-      setError(err.message || 'Simulation error');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Inventory simulation error';
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -79,7 +84,7 @@ export const InventoryInsights: React.FC = () => {
             </div>
           </div>
           <span className="text-xs font-mono px-2.5 py-1 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-            Linked to Model Projections
+            Coupled with ML Demand Forecast
           </span>
         </div>
       </div>
@@ -88,10 +93,10 @@ export const InventoryInsights: React.FC = () => {
       <div className="bg-indigo-950/20 border border-indigo-500/20 rounded-xl p-5 text-xs text-slate-300 space-y-2">
         <div className="flex items-center gap-2 font-semibold text-indigo-300 text-sm">
           <Info className="w-4 h-4" />
-          <span>Core Inventory Formulas</span>
+          <span>Core Inventory Replenishment Mechanics</span>
         </div>
         <p className="text-slate-400">
-          Demand during lead time is dynamically aggregated from the machine learning model's forecasted trajectory.
+          Lead-time demand is dynamically integrated from the machine learning model's forecasted trajectory over the exact supplier lead time window.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 font-mono text-[11px]">
           <div className="p-3 bg-slate-900/70 border border-slate-800 rounded-lg">
@@ -99,7 +104,7 @@ export const InventoryInsights: React.FC = () => {
             <code>reorder_point = demand_during_lead_time + safety_stock</code>
           </div>
           <div className="p-3 bg-slate-900/70 border border-slate-800 rounded-lg">
-            <strong className="text-indigo-300">Suggested Order:</strong><br />
+            <strong className="text-indigo-300">Suggested Reorder:</strong><br />
             <code>suggested_order = max(0, ROP - current_stock - incoming)</code>
           </div>
         </div>
@@ -109,13 +114,17 @@ export const InventoryInsights: React.FC = () => {
       <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-6 space-y-4">
         <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wider flex items-center gap-2">
           <Calculator className="w-4 h-4 text-indigo-400" />
-          <span>Replenishment Parameters</span>
+          <span>Replenishment Parameters & Scenario Config</span>
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
           <div className="lg:col-span-1">
-            <label className="text-xs text-slate-400 block mb-1">Store</label>
+            <label htmlFor="inv-store" className="text-xs text-slate-400 block mb-1 flex items-center gap-1">
+              <Store className="w-3 h-3 text-indigo-400" />
+              <span>Store</span>
+            </label>
             <select
+              id="inv-store"
               value={selectedStore}
               onChange={(e) => setSelectedStore(Number(e.target.value))}
               className="w-full bg-slate-800 border border-slate-700 text-xs text-white rounded-lg p-2.5 focus:outline-none focus:border-indigo-500"
@@ -127,8 +136,12 @@ export const InventoryInsights: React.FC = () => {
           </div>
 
           <div className="lg:col-span-1">
-            <label className="text-xs text-slate-400 block mb-1">Item SKU</label>
+            <label htmlFor="inv-item" className="text-xs text-slate-400 block mb-1 flex items-center gap-1">
+              <Tag className="w-3 h-3 text-indigo-400" />
+              <span>Product SKU</span>
+            </label>
             <select
+              id="inv-item"
               value={selectedItem}
               onChange={(e) => setSelectedItem(Number(e.target.value))}
               className="w-full bg-slate-800 border border-slate-700 text-xs text-white rounded-lg p-2.5 focus:outline-none focus:border-indigo-500"
@@ -140,8 +153,11 @@ export const InventoryInsights: React.FC = () => {
           </div>
 
           <div className="lg:col-span-1">
-            <label className="text-xs text-slate-400 block mb-1">On-Hand Stock</label>
+            <label htmlFor="inv-stock" className="text-xs text-slate-400 block mb-1">
+              On-Hand Stock
+            </label>
             <input
+              id="inv-stock"
               type="number"
               min="0"
               value={currentStock}
@@ -151,20 +167,26 @@ export const InventoryInsights: React.FC = () => {
           </div>
 
           <div className="lg:col-span-1">
-            <label className="text-xs text-slate-400 block mb-1">Lead Time (days)</label>
+            <label htmlFor="inv-lead" className="text-xs text-slate-400 block mb-1">
+              Lead Time (days)
+            </label>
             <input
+              id="inv-lead"
               type="number"
               min="1"
               max="30"
               value={leadTime}
-              onChange={(e) => setLeadTime(Math.max(1, Number(e.target.value)))}
+              onChange={(e) => setLeadTime(Math.min(30, Math.max(1, Number(e.target.value))))}
               className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
             />
           </div>
 
           <div className="lg:col-span-1">
-            <label className="text-xs text-slate-400 block mb-1">Incoming On-Order</label>
+            <label htmlFor="inv-incoming" className="text-xs text-slate-400 block mb-1">
+              Incoming On-Order
+            </label>
             <input
+              id="inv-incoming"
               type="number"
               min="0"
               value={incomingStock}
@@ -174,13 +196,16 @@ export const InventoryInsights: React.FC = () => {
           </div>
 
           <div className="lg:col-span-1">
-            <label className="text-xs text-slate-400 block mb-1">Safety Buffer (%)</label>
+            <label htmlFor="inv-buffer" className="text-xs text-slate-400 block mb-1">
+              Safety Buffer (%)
+            </label>
             <input
+              id="inv-buffer"
               type="number"
               min="0"
               max="100"
               value={safetyBufferPercent}
-              onChange={(e) => setSafetyBufferPercent(Math.max(0, Number(e.target.value)))}
+              onChange={(e) => setSafetyBufferPercent(Math.min(100, Math.max(0, Number(e.target.value))))}
               className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
             />
           </div>
@@ -198,38 +223,42 @@ export const InventoryInsights: React.FC = () => {
       {loading ? (
         <div className="p-8 text-center text-slate-500">
           <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-indigo-400" />
-          <span>Computing inventory balance...</span>
+          <span>Computing inventory balance from forecast trajectory...</span>
         </div>
       ) : recommendation ? (
         <div className="space-y-6">
           {/* Status Alert Banner */}
-          <div className={`p-4 rounded-xl border flex items-center justify-between flex-wrap gap-3 ${
+          <div className={`p-5 rounded-xl border flex items-center justify-between flex-wrap gap-4 ${
             recommendation.reorder_recommended
-              ? 'bg-amber-950/30 border-amber-800 text-amber-200'
-              : 'bg-emerald-950/30 border-emerald-800 text-emerald-200'
+              ? 'bg-amber-950/30 border-amber-800/80 text-amber-200'
+              : 'bg-emerald-950/30 border-emerald-800/80 text-emerald-200'
           }`}>
             <div className="flex items-center gap-3">
               {recommendation.reorder_recommended ? (
-                <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0" />
+                <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
               ) : (
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
               )}
               <div>
-                <span className="font-semibold text-sm block">
+                <span className="font-semibold text-base block">
                   {recommendation.reorder_recommended ? 'Reorder Recommended' : 'Inventory Position Adequate'}
                 </span>
-                <span className="text-xs opacity-80">
+                <span className="text-xs opacity-85 block mt-0.5">
                   {recommendation.reorder_recommended
-                    ? `Effective inventory (${recommendation.current_stock + recommendation.incoming_stock} units) is at or below ROP (${recommendation.reorder_point} units).`
+                    ? `Effective stock (${recommendation.current_stock + recommendation.incoming_stock} units) is below or equal to Reorder Point (${recommendation.reorder_point} units).`
                     : `Stock on hand (${recommendation.current_stock} units) covers expected lead-time demand plus safety buffer.`}
                 </span>
               </div>
             </div>
 
             <div className="text-right">
-              <span className="text-xs uppercase font-mono block opacity-75">Suggested Reorder</span>
-              <span className="text-2xl font-bold font-mono">
-                {Math.ceil(recommendation.suggested_order_quantity)} units
+              <span className="text-[11px] uppercase font-mono block opacity-75">Suggested Reorder</span>
+              <span className="text-3xl font-bold font-mono text-white">
+                {Math.ceil(recommendation.suggested_order_quantity)} <span className="text-xs font-normal text-slate-400">units</span>
               </span>
             </div>
           </div>
@@ -241,7 +270,7 @@ export const InventoryInsights: React.FC = () => {
               <span className="text-xl font-bold text-white font-mono">
                 {recommendation.expected_demand_during_lead_time} units
               </span>
-              <span className="text-[10px] text-slate-500 block mt-1">Across {recommendation.supplier_lead_time_days} days</span>
+              <span className="text-[10px] text-slate-500 block mt-1 font-mono">Across {recommendation.supplier_lead_time_days} days</span>
             </div>
 
             <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
@@ -249,7 +278,7 @@ export const InventoryInsights: React.FC = () => {
               <span className="text-xl font-bold text-indigo-400 font-mono">
                 {recommendation.safety_stock} units
               </span>
-              <span className="text-[10px] text-slate-500 block mt-1">({recommendation.safety_stock_buffer_percent}% buffer)</span>
+              <span className="text-[10px] text-slate-500 block mt-1 font-mono">({recommendation.safety_stock_buffer_percent}% buffer)</span>
             </div>
 
             <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
@@ -257,7 +286,7 @@ export const InventoryInsights: React.FC = () => {
               <span className="text-xl font-bold text-emerald-400 font-mono">
                 {recommendation.reorder_point} units
               </span>
-              <span className="text-[10px] text-slate-500 block mt-1">Trigger threshold</span>
+              <span className="text-[10px] text-slate-500 block mt-1 font-mono">Trigger threshold</span>
             </div>
 
             <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
@@ -265,14 +294,14 @@ export const InventoryInsights: React.FC = () => {
               <span className="text-xl font-bold text-cyan-400 font-mono">
                 {recommendation.current_stock + recommendation.incoming_stock} units
               </span>
-              <span className="text-[10px] text-slate-500 block mt-1">On-hand + Incoming</span>
+              <span className="text-[10px] text-slate-500 block mt-1 font-mono">On-hand + Incoming</span>
             </div>
           </div>
 
           {/* Assumptions List */}
           <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-5">
             <span className="text-xs font-semibold text-slate-300 block mb-2">
-              Model Assumptions & Safeguards:
+              Model Assumptions & Operational Safeguards:
             </span>
             <ul className="space-y-1.5 text-xs text-slate-400 list-disc list-inside">
               {recommendation.assumptions.map((item, idx) => (
@@ -281,7 +310,17 @@ export const InventoryInsights: React.FC = () => {
             </ul>
           </div>
         </div>
-      ) : null}
+      ) : (
+        <div className="border border-slate-800 bg-slate-900/30 rounded-xl p-10 text-center text-xs text-slate-500">
+          No inventory recommendation calculated yet.
+        </div>
+      )}
+
+      {/* Operational Caveat */}
+      <div className="p-3 bg-amber-500/5 border border-amber-500/20 rounded-xl flex items-center gap-2 text-xs text-amber-300">
+        <ShieldAlert className="w-4 h-4 flex-shrink-0" />
+        <span>Replenishment recommendations are decision-support heuristics. Always verify supplier minimum order quantities (MOQ).</span>
+      </div>
     </div>
   );
 };

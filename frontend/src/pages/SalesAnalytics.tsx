@@ -63,9 +63,15 @@ export const SalesAnalytics: React.FC = () => {
   const seasonalityData = summary?.seasonality?.day_of_week_mean_sales
     ? Object.entries(summary.seasonality.day_of_week_mean_sales).map(([day, val]) => ({
         day: day.slice(0, 3),
-        sales: val,
+        sales: Math.round(val * 10) / 10,
       }))
     : [];
+
+  // Calculate stats for the selected window
+  const totalWindowSales = historyData.reduce((acc, pt) => acc + pt.sales, 0);
+  const meanWindowSales = historyData.length > 0 ? (totalWindowSales / historyData.length).toFixed(1) : '0';
+  const maxWindowSales = historyData.length > 0 ? Math.max(...historyData.map((pt) => pt.sales)) : 0;
+  const minWindowSales = historyData.length > 0 ? Math.min(...historyData.map((pt) => pt.sales)) : 0;
 
   return (
     <div className="space-y-6">
@@ -94,8 +100,9 @@ export const SalesAnalytics: React.FC = () => {
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <Store className="w-4 h-4 text-indigo-400" />
-            <label className="text-xs text-slate-400">Store:</label>
+            <label htmlFor="select-store" className="text-xs text-slate-400">Store:</label>
             <select
+              id="select-store"
               value={selectedStore}
               onChange={(e) => setSelectedStore(Number(e.target.value))}
               className="bg-slate-800 border border-slate-700 text-xs text-white rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500"
@@ -108,8 +115,9 @@ export const SalesAnalytics: React.FC = () => {
 
           <div className="flex items-center gap-2">
             <Tag className="w-4 h-4 text-indigo-400" />
-            <label className="text-xs text-slate-400">Product Item:</label>
+            <label htmlFor="select-item" className="text-xs text-slate-400">Product SKU:</label>
             <select
+              id="select-item"
               value={selectedItem}
               onChange={(e) => setSelectedItem(Number(e.target.value))}
               className="bg-slate-800 border border-slate-700 text-xs text-white rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500"
@@ -122,8 +130,9 @@ export const SalesAnalytics: React.FC = () => {
 
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-indigo-400" />
-            <label className="text-xs text-slate-400">History Window:</label>
+            <label htmlFor="select-window" className="text-xs text-slate-400">History Window:</label>
             <select
+              id="select-window"
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
               className="bg-slate-800 border border-slate-700 text-xs text-white rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500"
@@ -145,6 +154,28 @@ export const SalesAnalytics: React.FC = () => {
         <div className="p-4 bg-rose-950/40 border border-rose-800 text-rose-300 text-xs rounded-xl flex items-center gap-2">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
+        </div>
+      )}
+
+      {/* Selected Window Summary Cards */}
+      {historyData.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+          <div className="bg-slate-900/40 p-3 rounded-lg border border-slate-800">
+            <span className="text-slate-400 text-[11px] block">Window Total</span>
+            <span className="text-white text-base font-semibold">{totalWindowSales.toLocaleString()} units</span>
+          </div>
+          <div className="bg-slate-900/40 p-3 rounded-lg border border-slate-800">
+            <span className="text-slate-400 text-[11px] block">Window Daily Mean</span>
+            <span className="text-indigo-300 text-base font-semibold">{meanWindowSales} units/day</span>
+          </div>
+          <div className="bg-slate-900/40 p-3 rounded-lg border border-slate-800">
+            <span className="text-slate-400 text-[11px] block">Peak Daily Sales</span>
+            <span className="text-emerald-400 text-base font-semibold">{maxWindowSales} units</span>
+          </div>
+          <div className="bg-slate-900/40 p-3 rounded-lg border border-slate-800">
+            <span className="text-slate-400 text-[11px] block">Trough Daily Sales</span>
+            <span className="text-amber-400 text-base font-semibold">{minWindowSales} units</span>
+          </div>
         </div>
       )}
 
@@ -194,7 +225,7 @@ export const SalesAnalytics: React.FC = () => {
           </div>
         ) : (
           <div className="h-72 flex items-center justify-center text-slate-500 text-xs">
-            No data available for this series combination.
+            No historical sales records found for Store {selectedStore} and Item {selectedItem}.
           </div>
         )}
       </div>

@@ -175,7 +175,7 @@ export const ModelPerformance: React.FC = () => {
 
         <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-5 space-y-3">
           <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wider">
-            Engineered Feature Inputs (14 features)
+            Engineered Feature Inputs ({modelInfo.feature_columns.length} features)
           </h3>
           <div className="flex flex-wrap gap-1.5">
             {modelInfo.feature_columns.map((f) => (

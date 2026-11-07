@@ -1,6 +1,8 @@
 import {
   HealthResponse,
   DatasetSummary,
+  DatasetSchemaInfo,
+  ValidationReport,
   SeriesList,
   HistoryResponse,
   ForecastRequest,
@@ -43,6 +45,10 @@ export async function fetchHealth(): Promise<HealthResponse> {
   return request<HealthResponse>('/health');
 }
 
+export async function fetchDatasetSchema(): Promise<DatasetSchemaInfo> {
+  return request<DatasetSchemaInfo>('/api/v1/datasets/schema');
+}
+
 export async function fetchAnalyticsSummary(): Promise<DatasetSummary> {
   return request<DatasetSummary>('/api/v1/analytics/summary');
 }
@@ -73,7 +79,7 @@ export async function fetchModelInfo(): Promise<ModelInfoResponse> {
   return request<ModelInfoResponse>('/api/v1/model/info');
 }
 
-export async function uploadDataset(file: File): Promise<{ success: boolean; message: string; report: any }> {
+export async function uploadDataset(file: File): Promise<{ success: boolean; message: string; report: ValidationReport }> {
   const formData = new FormData();
   formData.append('file', file);
 
@@ -83,7 +89,14 @@ export async function uploadDataset(file: File): Promise<{ success: boolean; mes
   });
 
   if (!response.ok) {
-    throw new Error(`Upload failed with status: ${response.status}`);
+    let errorDetail = response.statusText;
+    try {
+      const errJson = await response.json();
+      if (errJson.detail) errorDetail = errJson.detail;
+    } catch {
+      // ignore
+    }
+    throw new Error(`Upload failed (${response.status}): ${errorDetail}`);
   }
 
   return response.json();

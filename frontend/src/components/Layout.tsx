@@ -64,7 +64,7 @@ export const Layout: React.FC<LayoutProps> = ({
         </main>
 
         <footer className="py-4 px-6 border-t border-slate-900 text-center text-xs text-slate-400">
-          DemandSense AI • Phase 1 Core Shell • For educational & portfolio purposes only.
+          DemandSense AI • Retail Demand Forecasting & Inventory Intelligence Platform • Educational & portfolio use only.
         </footer>
       </div>
     </div>

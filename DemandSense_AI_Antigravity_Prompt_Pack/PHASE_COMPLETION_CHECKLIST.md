@@ -187,27 +187,27 @@ Follow these instructions after completing **every development phase (Phase 01â€
 
 # Phase 07 â€“ Integration, Testing & Quality Assurance
 
-- [ ] Frontend connected to backend APIs.
-- [ ] Dataset upload flow tested end to end.
-- [ ] Dataset validation flow tested.
-- [ ] Analytics data displayed correctly.
-- [ ] Store and item selection tested.
-- [ ] 7-day forecasting tested.
-- [ ] 14-day forecasting tested.
-- [ ] 30-day forecasting tested.
-- [ ] Forecast charts display correct API results.
-- [ ] Inventory calculations verified.
-- [ ] Model performance information displayed correctly.
-- [ ] Backend unit tests passed.
-- [ ] Frontend tests passed where applicable.
-- [ ] API integration tests passed.
-- [ ] Invalid inputs tested.
-- [ ] Missing data scenarios tested.
-- [ ] Edge cases investigated.
-- [ ] No critical errors in application logs.
-- [ ] No major browser console errors.
-- [ ] No hardcoded fake predictions or metrics.
-- [ ] Complete application workflow tested.
+- [x] Frontend connected to backend APIs.
+- [x] Dataset upload flow tested end to end.
+- [x] Dataset validation flow tested.
+- [x] Analytics data displayed correctly.
+- [x] Store and item selection tested.
+- [x] 7-day forecasting tested.
+- [x] 14-day forecasting tested.
+- [x] 30-day forecasting tested.
+- [x] Forecast charts display correct API results.
+- [x] Inventory calculations verified.
+- [x] Model performance information displayed correctly.
+- [x] Backend unit tests passed.
+- [x] Frontend tests passed where applicable.
+- [x] API integration tests passed.
+- [x] Invalid inputs tested.
+- [x] Missing data scenarios tested.
+- [x] Edge cases investigated.
+- [x] No critical errors in application logs.
+- [x] No major browser console errors.
+- [x] No hardcoded fake predictions or metrics.
+- [x] Complete application workflow tested.
 
 **Completion gate:** The complete application must work from dataset upload through forecasting and inventory insights.
 

@@ -26,7 +26,7 @@ def get_dataset_schema():
 @router.post("/validate")
 async def validate_uploaded_dataset(file: UploadFile = File(...)):
     """Validates an uploaded CSV without committing it as active dataset."""
-    if not file.filename.endswith(".csv"):
+    if not file.filename or not file.filename.lower().endswith(".csv"):
         raise HTTPException(status_code=400, detail="Invalid file type. Only CSV files are supported.")
 
     content = await file.read()
@@ -45,7 +45,7 @@ async def validate_uploaded_dataset(file: UploadFile = File(...)):
 @router.post("/upload")
 async def upload_active_dataset(file: UploadFile = File(...)):
     """Validates and stages a user CSV dataset."""
-    if not file.filename.endswith(".csv"):
+    if not file.filename or not file.filename.lower().endswith(".csv"):
         raise HTTPException(status_code=400, detail="Invalid file type. Only CSV files are supported.")
 
     content = await file.read()

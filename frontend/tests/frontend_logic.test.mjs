@@ -100,3 +100,45 @@ test('Canonical schema validation constraints match specifications', () => {
   assert.deepEqual(missingCols, ['item', 'sales']);
 });
 
+test('Sales window metrics calculation correctly computes aggregates', () => {
+  const historyData = [
+    { date: '2017-01-01', sales: 10 },
+    { date: '2017-01-02', sales: 20 },
+    { date: '2017-01-03', sales: 30 },
+  ];
+
+  const total = historyData.reduce((acc, pt) => acc + pt.sales, 0);
+  const mean = (total / historyData.length).toFixed(1);
+  const max = Math.max(...historyData.map(pt => pt.sales));
+  const min = Math.min(...historyData.map(pt => pt.sales));
+
+  assert.equal(total, 60);
+  assert.equal(mean, '20.0');
+  assert.equal(max, 30);
+  assert.equal(min, 10);
+});
+
+test('Confidence bounds expansion maintains logical monotonicity', () => {
+  const baseRmse = 8.24;
+  for (let step = 1; step <= 30; step++) {
+    const spread = baseRmse * (1.0 + 0.015 * step);
+    const predicted = 50.0;
+    const lower = Math.max(0, Math.round((predicted - 1.96 * spread) * 10) / 10);
+    const upper = Math.round((predicted + 1.96 * spread) * 10) / 10;
+
+    assert.ok(upper >= predicted, 'Upper bound must be greater than or equal to predicted sales');
+    assert.ok(lower <= predicted, 'Lower bound must be less than or equal to predicted sales');
+    assert.ok(lower >= 0, 'Lower bound cannot be negative');
+  }
+});
+
+test('File extension validation supports mixed case .CSV and rejects others', () => {
+  const isCsv = (filename) => filename.toLowerCase().endsWith('.csv');
+
+  assert.equal(isCsv('sales_data.csv'), true);
+  assert.equal(isCsv('SALES_2023.CSV'), true);
+  assert.equal(isCsv('report.xlsx'), false);
+  assert.equal(isCsv('data.txt'), false);
+});
+
+

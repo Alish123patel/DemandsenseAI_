@@ -49,6 +49,10 @@ def export_forecast_csv(payload: ForecastRequest):
             media_type="text/csv",
             headers={"Content-Disposition": f"attachment; filename={filename}"},
         )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=503, detail=f"Model artifact unavailable: {e}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

@@ -1,3 +1,13 @@
+import sys
+from pathlib import Path
+
+# Ensure project root and backend dir are in sys.path
+_root = Path(__file__).resolve().parent.parent.parent
+_backend = Path(__file__).resolve().parent.parent
+for _p in [str(_root), str(_backend)]:
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings

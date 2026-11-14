@@ -25,15 +25,15 @@ export const Layout: React.FC<LayoutProps> = ({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const activeItem = navigationItems.find((item) => item.id === activeTab);
-  const activeTitle = activeItem ? activeItem.label : 'DemandSense AI';
+  const activeTitle = activeItem ? activeItem.label : 'DemandSense';
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-[#141415] text-[#ededed] flex flex-col lg:flex-row font-sans">
       {/* Mobile backdrop */}
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 bg-black/60 z-30 lg:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-black/60 z-30 lg:hidden"
         />
       )}
 
@@ -59,15 +59,14 @@ export const Layout: React.FC<LayoutProps> = ({
           onRefreshHealth={onRefreshHealth}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-6 lg:p-8 max-w-7xl w-full mx-auto">
           {children}
         </main>
 
-        <footer className="py-4 px-6 border-t border-slate-900 text-center text-xs text-slate-400">
-          DemandSense AI • Retail Demand Forecasting & Inventory Intelligence Platform • Educational & portfolio use only.
+        <footer className="py-4 px-6 border-t border-[#26262a] text-center text-xs text-[#71717a]">
+          DemandSense • Demand Forecasting & Inventory Planning
         </footer>
       </div>
     </div>
   );
 };
-

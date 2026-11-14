@@ -16,26 +16,39 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
-  const response = await fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-    ...options,
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+      ...options,
+    });
+  } catch {
+    throw new Error('Unable to connect to the DemandSense AI server. Please verify the backend is running.');
+  }
 
   if (!response.ok) {
-    let errorDetail = response.statusText;
+    let friendlyMessage = 'An unexpected issue occurred while communicating with the server.';
     try {
       const errorJson = await response.json();
       if (errorJson.detail) {
-        errorDetail = typeof errorJson.detail === 'string' ? errorJson.detail : JSON.stringify(errorJson.detail);
+        if (typeof errorJson.detail === 'string') {
+          friendlyMessage = errorJson.detail;
+        } else if (Array.isArray(errorJson.detail) && errorJson.detail[0]?.msg) {
+          friendlyMessage = errorJson.detail[0].msg;
+        }
       }
     } catch {
-      // ignore
+      if (response.status === 404) {
+        friendlyMessage = 'The requested store or product records were not found.';
+      } else if (response.status === 413) {
+        friendlyMessage = 'The uploaded file exceeds the 50MB size limit.';
+      }
     }
-    throw new Error(`API error (${response.status}): ${errorDetail}`);
+    throw new Error(friendlyMessage);
   }
 
   return response.json();

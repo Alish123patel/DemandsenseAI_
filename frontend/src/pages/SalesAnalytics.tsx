@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-  BarChart3,
-  Calendar,
-  Store,
-  Tag,
   Loader2,
-  TrendingUp,
-  AlertCircle
+  AlertCircle,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -18,9 +13,12 @@ import {
   CartesianGrid,
   BarChart as RechartsBarChart,
   Bar,
+  Cell,
 } from 'recharts';
 import { fetchSeriesList, fetchSeriesHistory, fetchAnalyticsSummary } from '../api/client';
 import { HistoryPoint, DatasetSummary } from '../api/types';
+
+const DAY_LABELS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export const SalesAnalytics: React.FC = () => {
   const [stores, setStores] = useState<number[]>([]);
@@ -59,15 +57,15 @@ export const SalesAnalytics: React.FC = () => {
       .finally(() => setLoading(false));
   }, [selectedStore, selectedItem, limit]);
 
-  // Transform day-of-week seasonality into array for BarChart
   const seasonalityData = summary?.seasonality?.day_of_week_mean_sales
-    ? Object.entries(summary.seasonality.day_of_week_mean_sales).map(([day, val]) => ({
-        day: day.slice(0, 3),
+    ? Object.entries(summary.seasonality.day_of_week_mean_sales).map(([dayIdx, val]) => ({
+        day: DAY_LABELS[Number(dayIdx)] || `Day ${dayIdx}`,
         sales: Math.round(val * 10) / 10,
       }))
     : [];
 
-  // Calculate stats for the selected window
+  const maxSeasonalitySales = seasonalityData.length > 0 ? Math.max(...seasonalityData.map((d) => d.sales)) : 0;
+
   const totalWindowSales = historyData.reduce((acc, pt) => acc + pt.sales, 0);
   const meanWindowSales = historyData.length > 0 ? (totalWindowSales / historyData.length).toFixed(1) : '0';
   const maxWindowSales = historyData.length > 0 ? Math.max(...historyData.map((pt) => pt.sales)) : 0;
@@ -75,186 +73,214 @@ export const SalesAnalytics: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-6">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-              <BarChart3 className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-white">Sales Analytics</h2>
-              <p className="text-xs text-slate-400">
-                Exploratory Daily Time-Series & Seasonal Pattern Visualization
-              </p>
-            </div>
-          </div>
-          <span className="text-xs font-mono px-2.5 py-1 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-            Real Ingested History
-          </span>
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#26262a]">
+        <div>
+          <h1 className="text-xl font-semibold text-[#ededed] tracking-tight">Sales Trends</h1>
+          <p className="text-xs text-[#a1a1a6] mt-0.5">
+            Historical sales trajectory and weekly purchasing patterns
+          </p>
         </div>
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-4 flex flex-wrap gap-4 items-center justify-between">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Store className="w-4 h-4 text-indigo-400" />
-            <label htmlFor="select-store" className="text-xs text-slate-400">Store:</label>
+      <div className="bg-[#19191b] border border-[#26262a] rounded-lg p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label htmlFor="select-store" className="text-xs font-medium text-[#a1a1a6] block mb-1.5">
+              Store location
+            </label>
             <select
               id="select-store"
               value={selectedStore}
               onChange={(e) => setSelectedStore(Number(e.target.value))}
-              className="bg-slate-800 border border-slate-700 text-xs text-white rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-[#232325] border border-[#26262a] text-xs text-[#ededed] rounded-md px-3 py-2 focus:outline-none focus:border-[#3f3f46]"
             >
               {stores.map((s) => (
-                <option key={s} value={s}>Store {s}</option>
+                <option key={s} value={s}>Store #{s}</option>
               ))}
             </select>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Tag className="w-4 h-4 text-indigo-400" />
-            <label htmlFor="select-item" className="text-xs text-slate-400">Product SKU:</label>
+          <div>
+            <label htmlFor="select-item" className="text-xs font-medium text-[#a1a1a6] block mb-1.5">
+              Product SKU
+            </label>
             <select
               id="select-item"
               value={selectedItem}
               onChange={(e) => setSelectedItem(Number(e.target.value))}
-              className="bg-slate-800 border border-slate-700 text-xs text-white rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-[#232325] border border-[#26262a] text-xs text-[#ededed] rounded-md px-3 py-2 focus:outline-none focus:border-[#3f3f46]"
             >
               {items.map((i) => (
-                <option key={i} value={i}>Item {i}</option>
+                <option key={i} value={i}>Product SKU #{i}</option>
               ))}
             </select>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-indigo-400" />
-            <label htmlFor="select-window" className="text-xs text-slate-400">History Window:</label>
+          <div>
+            <label htmlFor="select-window" className="text-xs font-medium text-[#a1a1a6] block mb-1.5">
+              Timeframe
+            </label>
             <select
               id="select-window"
               value={limit}
               onChange={(e) => setLimit(Number(e.target.value))}
-              className="bg-slate-800 border border-slate-700 text-xs text-white rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-[#232325] border border-[#26262a] text-xs text-[#ededed] rounded-md px-3 py-2 focus:outline-none focus:border-[#3f3f46]"
             >
               <option value={30}>Last 30 Days</option>
+              <option value={60}>Last 60 Days</option>
               <option value={90}>Last 90 Days</option>
               <option value={180}>Last 180 Days</option>
               <option value={365}>Last 365 Days</option>
             </select>
           </div>
         </div>
-
-        <div className="text-xs font-mono text-slate-400">
-          Showing: Store {selectedStore} • Item {selectedItem} ({historyData.length} pts)
-        </div>
       </div>
 
       {error && (
-        <div className="p-4 bg-rose-950/40 border border-rose-800 text-rose-300 text-xs rounded-xl flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+        <div className="p-3 bg-[#19191b] border border-[#26262a] rounded-lg text-xs text-[#a1a1a6] flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-[#fbbf24] flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Selected Window Summary Cards */}
-      {historyData.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-          <div className="bg-slate-900/40 p-3 rounded-lg border border-slate-800">
-            <span className="text-slate-400 text-[11px] block">Window Total</span>
-            <span className="text-white text-base font-semibold">{totalWindowSales.toLocaleString()} units</span>
+      {/* KPI Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-[#19191b] border border-[#26262a] rounded-lg p-4">
+          <span className="text-xs text-[#71717a] block">Period sales volume</span>
+          <div className="text-2xl font-semibold text-[#ededed] font-mono tabular-nums tracking-tight mt-1">
+            {totalWindowSales.toLocaleString()} units
           </div>
-          <div className="bg-slate-900/40 p-3 rounded-lg border border-slate-800">
-            <span className="text-slate-400 text-[11px] block">Window Daily Mean</span>
-            <span className="text-indigo-300 text-base font-semibold">{meanWindowSales} units/day</span>
-          </div>
-          <div className="bg-slate-900/40 p-3 rounded-lg border border-slate-800">
-            <span className="text-slate-400 text-[11px] block">Peak Daily Sales</span>
-            <span className="text-emerald-400 text-base font-semibold">{maxWindowSales} units</span>
-          </div>
-          <div className="bg-slate-900/40 p-3 rounded-lg border border-slate-800">
-            <span className="text-slate-400 text-[11px] block">Trough Daily Sales</span>
-            <span className="text-amber-400 text-base font-semibold">{minWindowSales} units</span>
-          </div>
+          <span className="text-[11px] text-[#71717a] block mt-0.5">Across {historyData.length} days</span>
         </div>
-      )}
 
-      {/* Main Historical Chart */}
-      <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-indigo-400" />
-            <span>Daily Sales Trajectory</span>
-          </h3>
-          <span className="text-xs text-slate-400 font-mono">Units Sold / Day</span>
+        <div className="bg-[#19191b] border border-[#26262a] rounded-lg p-4">
+          <span className="text-xs text-[#71717a] block">Average daily sales</span>
+          <div className="text-2xl font-semibold text-[#ededed] font-mono tabular-nums tracking-tight mt-1">
+            {meanWindowSales} units
+          </div>
+          <span className="text-[11px] text-[#71717a] block mt-0.5">Daily mean velocity</span>
+        </div>
+
+        <div className="bg-[#19191b] border border-[#26262a] rounded-lg p-4">
+          <span className="text-xs text-[#71717a] block">Period peak</span>
+          <div className="text-2xl font-semibold text-[#ededed] font-mono tabular-nums tracking-tight mt-1">
+            {maxWindowSales} units
+          </div>
+          <span className="text-[11px] text-[#71717a] block mt-0.5">Highest recorded day</span>
+        </div>
+
+        <div className="bg-[#19191b] border border-[#26262a] rounded-lg p-4">
+          <span className="text-xs text-[#71717a] block">Period low</span>
+          <div className="text-2xl font-semibold text-[#ededed] font-mono tabular-nums tracking-tight mt-1">
+            {minWindowSales} units
+          </div>
+          <span className="text-[11px] text-[#71717a] block mt-0.5">Lowest recorded day</span>
+        </div>
+      </div>
+
+      {/* Historical Sales Trajectory Chart */}
+      <div className="bg-[#19191b] border border-[#26262a] rounded-lg p-5">
+        <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#26262a]">
+          <div>
+            <span className="text-xs font-medium text-[#ededed]">Sales History</span>
+            <span className="text-xs text-[#71717a] ml-2">Store #{selectedStore} • SKU #{selectedItem}</span>
+          </div>
+          <span className="text-[11px] font-mono text-[#71717a]">{historyData.length} daily points</span>
         </div>
 
         {loading ? (
-          <div className="h-72 flex items-center justify-center text-slate-500">
-            <Loader2 className="w-6 h-6 animate-spin text-indigo-400 mr-2" />
-            <span>Loading time-series data...</span>
+          <div className="h-72 flex items-center justify-center text-xs text-[#71717a] gap-2">
+            <Loader2 className="w-4 h-4 animate-spin text-[#ededed]" />
+            <span>Loading history...</span>
           </div>
-        ) : historyData.length > 0 ? (
+        ) : (
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={historyData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <LineChart data={historyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid stroke="#26262a" strokeDasharray="3 3" vertical={false} />
                 <XAxis
                   dataKey="date"
-                  stroke="#64748b"
-                  fontSize={11}
+                  stroke="#71717a"
+                  tick={{ fill: '#71717a', fontSize: 10, fontFamily: 'JetBrains Mono' }}
                   tickFormatter={(val) => val.slice(5)}
                 />
-                <YAxis stroke="#64748b" fontSize={11} />
+                <YAxis
+                  stroke="#71717a"
+                  tick={{ fill: '#71717a', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+                />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px' }}
-                  labelStyle={{ color: '#94a3b8' }}
-                  itemStyle={{ color: '#818cf8' }}
+                  contentStyle={{
+                    backgroundColor: '#0f0f10',
+                    borderColor: '#26262a',
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    color: '#ededed',
+                    fontFamily: 'JetBrains Mono',
+                  }}
+                  formatter={(value: any) => [`${value} units`, 'Sales']}
                 />
                 <Line
                   type="monotone"
                   dataKey="sales"
-                  name="Units Sold"
-                  stroke="#6366f1"
-                  strokeWidth={2}
+                  stroke="#ededed"
+                  strokeWidth={1.5}
                   dot={false}
-                  activeDot={{ r: 5 }}
                 />
               </LineChart>
             </ResponsiveContainer>
           </div>
-        ) : (
-          <div className="h-72 flex items-center justify-center text-slate-500 text-xs">
-            No historical sales records found for Store {selectedStore} and Item {selectedItem}.
-          </div>
         )}
       </div>
 
-      {/* Seasonality Chart */}
-      {seasonalityData.length > 0 && (
-        <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-white">
-              Day-of-Week Seasonality (Dataset Average)
-            </h3>
-            <span className="text-xs text-slate-400 font-mono">Mean Units Sold</span>
-          </div>
-          <div className="h-52 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <RechartsBarChart data={seasonalityData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="day" stroke="#64748b" fontSize={11} />
-                <YAxis stroke="#64748b" fontSize={11} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px' }}
-                  itemStyle={{ color: '#38bdf8' }}
-                />
-                <Bar dataKey="sales" name="Mean Sales" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-              </RechartsBarChart>
-            </ResponsiveContainer>
-          </div>
+      {/* Weekday Seasonality */}
+      <div className="bg-[#19191b] border border-[#26262a] rounded-lg p-5">
+        <div className="pb-3 mb-4 border-b border-[#26262a]">
+          <span className="text-xs font-medium text-[#ededed]">Day-of-Week Sales Volume</span>
+          <p className="text-xs text-[#71717a] mt-0.5">Average customer purchase units by day of week across all store history</p>
         </div>
-      )}
+
+        <div className="h-64 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <RechartsBarChart data={seasonalityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid stroke="#26262a" strokeDasharray="3 3" vertical={false} />
+              <XAxis
+                dataKey="day"
+                stroke="#71717a"
+                tick={{ fill: '#71717a', fontSize: 10, fontFamily: 'Inter' }}
+              />
+              <YAxis
+                stroke="#71717a"
+                tick={{ fill: '#71717a', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#0f0f10',
+                  borderColor: '#26262a',
+                  borderRadius: '6px',
+                  fontSize: '11px',
+                  color: '#ededed',
+                  fontFamily: 'JetBrains Mono',
+                }}
+                formatter={(value: any) => [`${value} avg units/day`, 'Mean Volume']}
+              />
+              <Bar dataKey="sales" radius={[4, 4, 0, 0]}>
+                {seasonalityData.map((entry, index) => {
+                  const isPeak = entry.sales === maxSeasonalitySales;
+                  return (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={isPeak ? '#34d399' : '#232325'}
+                      stroke={isPeak ? '#34d399' : '#26262a'}
+                    />
+                  );
+                })}
+              </Bar>
+            </RechartsBarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
     </div>
   );
 };

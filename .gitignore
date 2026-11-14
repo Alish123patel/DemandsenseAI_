@@ -43,21 +43,20 @@ frontend/dist-ssr/
 *.pem
 *.key
 
-# Data & Model Artifacts (never commit large raw datasets or binary models)
-data/
+# Data & Model Artifacts
+/data/
 *.zip
 ml/data/raw/
 ml/data/processed/
-ml/data/*.csv
 ml/data/*.parquet
-ml/data/*.json
 !ml/data/.gitkeep
 !ml/data/**/.gitkeep
+!ml/data/seed_sales.csv
 ml/models/*.pkl
-ml/models/*.joblib
 ml/models/*.bin
-ml/models/*.json
 !ml/models/.gitkeep
+!ml/models/best_model.joblib
+!ml/models/model_metadata.json
 ml/reports/figures/
 ml/reports/*.png
 

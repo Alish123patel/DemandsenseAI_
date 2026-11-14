@@ -1,0 +1,122 @@
+{
+  "model_name": "XGBoost",
+  "version": "1.0.0",
+  "trained_at": "2026-11-04T13:10:42.469433+00:00",
+  "feature_columns": [
+    "store",
+    "item",
+    "day_of_week",
+    "day_of_month",
+    "month",
+    "year",
+    "week_of_year",
+    "is_weekend",
+    "lag_1",
+    "lag_7",
+    "lag_14",
+    "lag_28",
+    "rolling_mean_7",
+    "rolling_std_7",
+    "rolling_mean_28"
+  ],
+  "target_column": "sales",
+  "split_config": {
+    "train_end": "2016-12-31",
+    "val_start": "2017-01-01",
+    "val_end": "2017-06-30",
+    "test_start": "2017-07-01",
+    "test_end": "2017-12-31"
+  },
+  "selected_metrics": {
+    "val": {
+      "MAE": 6.016,
+      "RMSE": 7.824,
+      "WAPE": 0.1071,
+      "sMAPE": 12.485
+    },
+    "test": {
+      "MAE": 6.34,
+      "RMSE": 8.24,
+      "WAPE": 0.1033,
+      "sMAPE": 11.902
+    }
+  },
+  "benchmark_comparison": {
+    "Naive (Lag 1)": {
+      "val": {
+        "MAE": 10.894,
+        "RMSE": 14.892,
+        "WAPE": 0.1939,
+        "sMAPE": 21.551
+      },
+      "test": {
+        "MAE": 11.59,
+        "RMSE": 15.863,
+        "WAPE": 0.1888,
+        "sMAPE": 20.704
+      }
+    },
+    "Seasonal Naive (Lag 7)": {
+      "val": {
+        "MAE": 8.463,
+        "RMSE": 11.046,
+        "WAPE": 0.1506,
+        "sMAPE": 17.643
+      },
+      "test": {
+        "MAE": 9.214,
+        "RMSE": 12.114,
+        "WAPE": 0.1501,
+        "sMAPE": 17.042
+      }
+    },
+    "Rolling Mean (7d)": {
+      "val": {
+        "MAE": 8.626,
+        "RMSE": 11.407,
+        "WAPE": 0.1535,
+        "sMAPE": 16.873
+      },
+      "test": {
+        "MAE": 9.328,
+        "RMSE": 12.289,
+        "WAPE": 0.1519,
+        "sMAPE": 16.472
+      }
+    },
+    "XGBoost": {
+      "val": {
+        "MAE": 6.016,
+        "RMSE": 7.824,
+        "WAPE": 0.1071,
+        "sMAPE": 12.485
+      },
+      "test": {
+        "MAE": 6.34,
+        "RMSE": 8.24,
+        "WAPE": 0.1033,
+        "sMAPE": 11.902
+      }
+    },
+    "Random Forest": {
+      "val": {
+        "MAE": 6.133,
+        "RMSE": 7.996,
+        "WAPE": 0.1091,
+        "sMAPE": 12.678
+      },
+      "test": {
+        "MAE": 6.531,
+        "RMSE": 8.499,
+        "WAPE": 0.1064,
+        "sMAPE": 12.215
+      }
+    }
+  },
+  "intended_use": "Educational and portfolio demand forecasting assistant. Produces mathematical 7, 14, and 30-day unit demand projections. Not for automated purchasing without human oversight.",
+  "limitations": [
+    "Trained solely on store-item historical units sold.",
+    "Does not account for external shocks, weather, or promotional events absent from source data.",
+    "Direct and recursive forecasts accumulate uncertainty over extended horizons."
+  ]
+}

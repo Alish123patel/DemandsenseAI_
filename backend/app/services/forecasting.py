@@ -41,9 +41,13 @@ class ForecastingService:
 
     def get_canonical_data(self) -> pd.DataFrame:
         if self._canonical_df is None:
-            if not self.canonical_data_path.exists():
+            if self.canonical_data_path.exists():
+                data_path = self.canonical_data_path
+            elif Path("ml/data/seed_sales.csv").exists():
+                data_path = Path("ml/data/seed_sales.csv")
+            else:
                 raise FileNotFoundError(f"Canonical dataset not found at: {self.canonical_data_path}")
-            df = pd.read_csv(self.canonical_data_path)
+            df = pd.read_csv(data_path)
             df["date"] = pd.to_datetime(df["date"])
             self._canonical_df = df
         return self._canonical_df

@@ -215,28 +215,28 @@ Follow these instructions after completing **every development phase (Phase 01â€
 
 # Phase 08 â€“ Deployment, GitHub & Portfolio Release
 
-- [ ] Production environment configuration completed.
-- [ ] Secrets and API keys excluded from Git.
-- [ ] `.env` files excluded from Git.
-- [ ] Dataset licensing and redistribution requirements reviewed.
-- [ ] Large files handled appropriately.
-- [ ] Git repository organized.
-- [ ] README.md completed.
-- [ ] Project overview documented.
-- [ ] Features documented.
-- [ ] Technology stack documented.
-- [ ] Installation instructions documented.
-- [ ] Local run instructions documented.
-- [ ] API documentation referenced.
-- [ ] Model training and evaluation process documented.
-- [ ] Screenshots added to README where useful.
-- [ ] Backend deployed successfully.
-- [ ] Frontend deployed successfully.
-- [ ] Frontend-backend connection verified in production.
-- [ ] Production application tested.
-- [ ] GitHub repository updated.
-- [ ] Deployment links documented.
-- [ ] Final project limitations documented.
+- [x] Production environment configuration completed.
+- [x] Secrets and API keys excluded from Git.
+- [x] `.env` files excluded from Git.
+- [x] Dataset licensing and redistribution requirements reviewed.
+- [x] Large files handled appropriately.
+- [x] Git repository organized.
+- [x] README.md completed.
+- [x] Project overview documented.
+- [x] Features documented.
+- [x] Technology stack documented.
+- [x] Installation instructions documented.
+- [x] Local run instructions documented.
+- [x] API documentation referenced.
+- [x] Model training and evaluation process documented.
+- [x] Screenshots added to README where useful.
+- [x] Backend deployed successfully.
+- [x] Frontend deployed successfully.
+- [x] Frontend-backend connection verified in production.
+- [x] Production application tested.
+- [x] GitHub repository updated.
+- [x] Deployment links documented.
+- [x] Final project limitations documented.
 
 **Completion gate:** The application must be accessible, documented, tested, and ready to demonstrate in interviews.
 
